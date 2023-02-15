@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="appweb-customerloyaltyengine-web" metadata-complete="true" version="2.5">
+  <display-name>ECOMAPPWEB-CustomerLoyaltyEngine</display-name>
+  
+  <!-- Parametros de contexto -->
+  <context-param>
+    <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+    <param-value>ApplicationResources</param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>webAppRootKey</param-name>
+    <param-value>ECOMAPPWEB-CustomerLoyaltyEngine</param-value>
+  </context-param>
+  
+  <!-- Ficheros de configuracion del contexto principal de spring -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+            classpath:spring/spring-model.xml
+            classpath:spring/spring-common.xml
+            classpath:spring/jms-config.xml
+            classpath:spring/spring-security.xml
+        </param-value>
+  </context-param>
+  
+  <!-- Filtro de seguridad de spring que espera tener definido un bean con el nombre "springSecurityFilterChain" de tipo filtro -->
+  <filter>
+    <description>Spring Security Filter</description>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  
+  <!-- Filtro para garantizar que se usa como codificacion UTF-8 -->
+  <filter>
+    <filter-name>Encoding Filter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  
+  <!-- Filtro para guardar informacion relevante del contexto de la solicitud y exponerlo a la libreria de logging -->
+  <filter>
+    <filter-name>MDC Logback</filter-name>
+    <filter-class>ch.qos.logback.classic.helpers.MDCInsertingServletFilter</filter-class>
+  </filter>
+  
+  <!-- COMENTAR PARA DESACTIVAR AUTENTICACION -->
+    <!--<filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>-->
+    
+  <filter-mapping>
+    <filter-name>Encoding Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>MDC Logback</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- Limpieza de metadatos de JavaBeans cacheados -->
+  <listener>
+    <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+  </listener>
+  
+  <!-- Inicializacion del contexto principal de spring segun los ficheros que indique el parametro "contextConfigLocation" -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  <!-- Controlador frontal -->
+  <servlet>
+    <servlet-name>main</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <!-- Mapping para vistas HTML -->
+   <servlet-mapping>
+    <servlet-name>main</servlet-name>
+    <url-pattern>*.html</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Mapping para peticiones REST -->
+  <servlet-mapping>
+    <servlet-name>main</servlet-name>
+    <url-pattern>/api/*</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Tiempo de timeout -->
+  <session-config>
+    <session-timeout>10</session-timeout>
+  </session-config>
+  
+  <!-- Pagina de inicio -->
+  <welcome-file-list>
+    <welcome-file>/WEB-INF/index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <!-- Variables de entorno -->
+  <env-entry>
+    <env-entry-name>urlBaseSSO</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>http://localhost:9080/ServiciosSSO</env-entry-value>
+  </env-entry>
+  
+  <!-- Credenciales para emplear el servicio MemberShipAdmin (manipula datos del SSO del usuario) -->
+  <env-entry>
+    <env-entry-name>User.MemberShipAdmin</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>srvcdesldap</env-entry-value>
+  </env-entry>
+  
+  <env-entry>
+    <env-entry-name>Password.MemberShipAdmin</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>fOYJbxqXQw2rQ2Qd0f2SmQ==</env-entry-value>
+  </env-entry>
+  
+  <!-- Identificador de la aplicacion en el SSO -->
+  <env-entry>
+    <env-entry-name>applicationId</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>AppReglasDistOnline</env-entry-value>
+  </env-entry>
+  
+  <!-- Ruta a los logs de la aplicacion -->
+  <env-entry>
+    <env-entry-name>logPath</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>/opt/data/logs/ECOMAPPWEB-CustomerLoyaltyEngine</env-entry-value>
+  </env-entry>
+  
+  <!-- Establecemos los minutos de chequeo de expiraciones a 25 minutos -->
+  <env-entry>
+    <env-entry-name>minutosChequeoExpiraciones</env-entry-name>
+    <env-entry-type>java.lang.Long</env-entry-type>
+    <env-entry-value>1500000</env-entry-value>
+  </env-entry>
+  
+  <!-- Establecemos los minutos de chequeo de cancelaciones a 25 minutos -->
+  <env-entry>
+    <env-entry-name>minutosChequeoCancelaciones</env-entry-name>
+    <env-entry-type>java.lang.Long</env-entry-type>
+    <env-entry-value>1500000</env-entry-value>
+  </env-entry>
+  
+  <!-- Establecemos los segundos de bloqueo de filas a 5 -->
+  <env-entry>
+    <env-entry-name>segundosTimeoutBloqueoFilas</env-entry-name>
+    <env-entry-type>java.lang.Integer</env-entry-type>
+    <env-entry-value>5</env-entry-value>
+  </env-entry>
+  
+  <!-- Establecemos el numero maximo de reintentos a 3 -->
+  <env-entry>
+    <env-entry-name>maximoNumeroReintentos</env-entry-name>
+    <env-entry-type>java.lang.Integer</env-entry-type>
+    <env-entry-value>3</env-entry-value>
+  </env-entry>
+  
+  <!-- Establecemos el identificador de instalacion a 1 -->
+   <env-entry>
+    <env-entry-name>ID_INSTALACION</env-entry-name>
+    <env-entry-type>java.lang.Integer</env-entry-type>
+    <env-entry-value>1</env-entry-value>
+  </env-entry>
+  
+  <!-- Establecemos configuracion JMS -->
+  <resource-ref id="CF_CustomerLoyaltyEngine">
+    <description>Connection Factory</description>
+    <res-ref-name>jms/ECOMAPPWEB-CustomerLoyaltyEngineCF</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Shareable</res-sharing-scope>
+  </resource-ref>
+  
+  <resource-ref id="Q1_CustomerLoyaltyEngine">
+    <res-ref-name>jms/ECOMAPPWEB-CustomerLoyaltyEngineQ1</res-ref-name>
+    <res-type>javax.jms.Queue</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Shareable</res-sharing-scope>
+  </resource-ref>
+  
+  <!-- Pool de conexiones -->
+  <resource-ref id="DS_CustomerLoyaltyEngine">
+    <res-ref-name>jdbc/ECOMAPPWEB-CustomerLoyaltyEngine</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Shareable</res-sharing-scope>
+  </resource-ref>
+  
+   <!-- Timermanager para hilos gestionados (Comentar para que funcione en JETTY)-->
+   <resource-ref id="TM_CustomerLoyaltyEngine">
+       <res-ref-name>tm/ECOMAPPWEB-CustomerLoyaltyEngine</res-ref-name>
+       <res-type>commonj.timers.TimerManager</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Unshareable</res-sharing-scope>
+   </resource-ref>
+    
+   <resource-ref id="WM_CustomerLoyaltyEngine">    
+      <res-ref-name>wm/ECOMAPPWEB-CustomerLoyaltyEngine</res-ref-name>    
+      <res-type>commonj.work.WorkManager</res-type>    
+      <res-auth>Container</res-auth>    
+      <res-sharing-scope>Shareable</res-sharing-scope>
+   </resource-ref>
+   
+</web-app>

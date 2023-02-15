@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Component scan para que busque las clases anotadas para incluir en el contexto de spring -->
+    <context:component-scan base-package="com.inditex.ecom.appwebcustomerloyaltyengine.web" />
+    
+    <!--  Ficheros de internacionalización de la capa Web Java -->
+    <bean id="webMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:basenames="ApplicationResources" p:useCodeAsDefaultMessage="true" />
+
+    <!-- Mapea las solicitudes del controlador frontal DispatcherServlet a los controladores anotados -->
+    <bean name="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+        <property name="useTrailingSlashMatch" value="true" />
+        
+        <property name="alwaysUseFullPath" value="true" />
+        <property name="interceptors">
+            <!-- Interceptor de hibernate -->
+            <bean class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+                <property name="sessionFactory" ref="sessionFactory" />
+                <property name="flushModeName" value="FLUSH_COMMIT" />
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Handler adapters -->
+    <bean name="handlerAdapter" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+    	<property name="webBindingInitializer">
+	        <bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer"></bean>
+	    </property>
+        <property name="messageConverters">
+            <list>
+                <ref bean="stringHttpMessageConverter" />
+                <ref bean="jsonHttpMessageConverter" />
+            </list>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+
+    <!-- Resolucion de vistas -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+    	<property name="contentNegotiationManager" ref="contentNegotiationManager" />
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.tiles2.TilesViewResolver">
+                    <property name="viewNames" value="*.html" />
+                </bean>
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+	    <property name="favorPathExtension" value="false" />
+	    <property name="favorParameter" value="true" />
+	    <property name="parameterName" value="mediaType" />
+	    <property name="ignoreAcceptHeader" value="true" />
+	    <property name="useJaf" value="false" />
+	    <property name="defaultContentType" value="application/json" />
+	 
+	    <property name="mediaTypes">
+	        <map>
+                <entry key="html" value="text/html" />
+                <entry key="json" value="application/json" />
+            </map>
+	    </property>
+	</bean>
+
+    <!-- Conversores de mensaje http -->
+    <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
+
+    <bean id="jsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+
+    <bean id="byteHttpMessageConverter" class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+
+    <bean id="resourceHttpMessageConverter" class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+    
+    <!-- Excepciones -->
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
+        <property name="messageConverters">
+            <list>
+                <ref bean="stringHttpMessageConverter" />
+                <ref bean="jsonHttpMessageConverter" />
+            </list>
+        </property>
+    </bean>
+
+</beans>

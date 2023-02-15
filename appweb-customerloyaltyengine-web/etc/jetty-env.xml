@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<Configure id="webapp" class="org.eclipse.jetty.webapp.WebAppContext">
+
+	<New id="pooledConnectionFactory" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg>
+            <Ref id="webapp" />
+        </Arg>
+		<Arg>jms/ECOMAPPWEB-CustomerLoyaltyEngineCF</Arg>
+		<Arg>
+			<!-- WebSphereMQ -->
+			<New class="com.ibm.mq.jms.MQQueueConnectionFactory">
+				<Set name="HostName">127.0.0.1</Set>
+				<Set name="Port">1414</Set>
+				<Set name="Channel">SERVER.CHANNEL1</Set>
+				<Set name="TransportType">1</Set>
+				<Set name="QueueManager">MYQMGR</Set>
+			</New>
+	  	</Arg>
+	</New>
+	
+    <New id="queue" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg>jms/ECOMAPPWEB-CustomerLoyaltyEngineQ1</Arg>
+        <!-- WebSphereMQ -->
+        <Arg>
+            <New class="com.ibm.mq.jms.MQQueue">
+                <Arg>REQUEST</Arg>
+            </New>
+        </Arg>
+    </New>
+    
+  	<!-- datasource -->
+    <New id="ds" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg>
+            <Ref id="webapp" />
+        </Arg>
+        <Arg>jdbc/ECOMAPPWEB-CustomerLoyaltyEngine</Arg>
+        <Arg>
+            <New class="org.apache.commons.dbcp.BasicDataSource">
+                <Set name="driverClassName">com.ibm.db2.jcc.DB2Driver</Set>                
+                <Set name="url">jdbc:db2://127.0.0.1:50000/INDITEX:currentSchema=DESCUENTOS;retrieveMessagesFromServerOnGetMessage=true;fullyMaterializeLobData=true;fullyMaterializeInputStreams=true;progressiveStreaming=2;concurrentAccessResolution=1;</Set>
+				<Set name="username">db2admin</Set>
+				<Set name="password">admin</Set>
+                <Set name="maxActive">5</Set>
+                <Set name="maxIdle">5</Set>
+                <Set name="maxWait">10000</Set>
+            </New>
+        </Arg>
+    </New>
+  
+    <New class="org.eclipse.jetty.plus.jndi.EnvEntry">
+        <Arg>
+            <Ref id="webapp" />
+        </Arg>
+        <Arg>urlBaseSSO</Arg>
+        <Arg type="java.lang.String">http://axdeswas5.central.inditex.grp/ServiciosSSO</Arg>
+        <Arg type="boolean">true</Arg>
+    </New>
+
+    <New class="org.eclipse.jetty.plus.jndi.EnvEntry">
+        <Arg>
+            <Ref id="webapp" />
+        </Arg>
+        <Arg>applicationId</Arg>
+        <Arg type="java.lang.String">AppReglasDistOnline</Arg>
+        <Arg type="boolean">true</Arg>
+    </New>
+
+    <New class="org.eclipse.jetty.plus.jndi.EnvEntry">
+        <Arg>
+            <Ref id="webapp" />
+        </Arg>
+        <Arg>logPath</Arg>
+        <Arg type="java.lang.String">.</Arg>
+        <Arg type="boolean">true</Arg>
+    </New>
+
+    <Set name="extractWAR">true</Set>
+
+</Configure>

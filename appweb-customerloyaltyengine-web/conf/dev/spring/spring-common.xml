@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context" 
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       					   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <!-- Data source obtenida mediante JNDI tal cual se indica en el fichero de recursos del servidor de aplicaciones -->
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean" p:jndiName="java:comp/env/jdbc/ECOMAPPWEB-CustomerLoyaltyEngine" />
+
+    <!-- Configuracion a partir de parametros env-entry -->
+    <bean id="jndiPropertyPlaceholder" class="com.inditex.common.business.config.JndiPropertyPlaceholderConfigurer">
+        <property name="jndiOverride" value="true" />
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+    </bean>
+
+    <!-- Identificador de la aplicacion en el SSO para autorizacion y configuracion de auditoria -->
+    <bean id="aplicacionSSO" class="java.lang.String">
+        <constructor-arg value="${applicationId}" />
+    </bean>
+
+    <!-- Proveedor de nombres de usuario que devuelve el nombre del principal pre-autenticado por el servidor de aplicaciones -->
+    <bean id="userNameProvider" class="com.inditex.arquitectura.componentes.webapp.util.BasicUserNameProvider" />
+
+    <!-- Proveedor de mapeos entre nombre de usuario y principal que emplea un mapa, apto para pruebas -->
+    <bean id="principalProvider" class="com.inditex.arquitectura.componentes.webapp.util.MapBackedNameToPrincipalProvider">
+        <property name="principals">
+            <map>
+                <entry key="inditex" value-ref="inditexUser" />
+                <entry key="otro" value-ref="otroUser" />
+            </map>
+        </property>
+    </bean>
+
+    <!-- Ejemplos de usuarios pre-definidos para pruebas -->
+    <bean id="inditexUser" class="com.inditex.seguridad.sso.UserInformation">
+        <!-- Nombre de usuario -->
+        <property name="name" value="inditex"/>
+        
+        <!-- Informacion de usuario -->
+        <property name="usuario">
+            <bean class="com.inditex.seguridad.sso.ws.client.MembershipUser">
+                <property name="company" value="Inditex" />
+                <property name="email" value="inditex@inditex.com" />
+                <property name="employeeId" value="023023020323" />
+                <property name="employeeNumber" value="28393030433" />
+            </bean>
+        </property>
+        
+        <!-- Detalles de usuario -->
+        <property name="detalles">
+            <bean class="com.inditex.seguridad.sso.dummy.facade.UserDetailsDummy">
+                <property name="idUsuario" value="0" />
+                <property name="login" value="central\inditex" />
+                <property name="nombre" value="Inditex Test User" />
+                <property name="email" value="inditex@inditex.com" />
+                <property name="empresa" value="Inditex SA" />
+                <property name="idPersona" value="023023020323" />
+                <property name="idPersonaUniversal" value="23023023" />
+                <property name="userPrincipalName" value="inditex@central.inditex.grp" />
+            </bean>
+        </property>
+        
+        <!-- Roles del usuario -->
+        <property name="roleList">
+            <list>
+                <value>administrador</value>
+                <value>usuario</value>
+                <value>reglasdistonline.consulta</value>
+                <value>reglasdistonline.reserva</value>
+                <value>reglasdistonline.recargaconfig</value>
+            </list>
+        </property>
+        
+        <!-- Atributos univaluados -->
+        <property name="atributos">
+            <map>
+                <entry key="idioma" value="es-ES" />
+                <entry key="atributo1" value="valor1" />
+            </map>
+        </property>
+        
+        <!-- Atributos multivaluados -->
+        <property name="atributosMultivalor">
+            <map>
+                <entry key="atributoMv1">
+                    <list>
+                        <value>valorMV1</value>
+                        <value>valorMV2</value>
+                    </list>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="otroUser" class="com.inditex.seguridad.sso.UserInformation">
+        <!-- Nombre de usuario -->
+        <property name="name" value="otro" />
+        
+        <!-- Informacion de usuario -->
+        <property name="usuario">
+            <bean class="com.inditex.seguridad.sso.ws.client.MembershipUser">
+                <property name="company" value="Inditex" />
+                <property name="email" value="otro@inditex.com" />
+                <property name="employeeId" value="12312231234" />
+                <property name="employeeNumber" value="45345634534" />
+            </bean>
+        </property>
+        
+        <!-- Detalles de usuario -->
+        <property name="detalles">
+            <bean class="com.inditex.seguridad.sso.dummy.facade.UserDetailsDummy">
+                <property name="idUsuario" value="-1" />
+                <property name="login" value="central\otro" />
+                <property name="nombre" value="Otro Test User" />
+                <property name="email" value="otro@inditex.com" />
+                <property name="empresa" value="Inditex SA" />
+                <property name="idPersona" value="12312231234" />
+                <property name="idPersonaUniversal" value="1231223" />
+                <property name="userPrincipalName" value="otro@central.inditex.grp" />
+            </bean>
+        </property>
+        
+        <!-- Roles del usuario -->
+        <property name="roleList">
+            <list>
+                <value>usuario</value>
+            </list>
+        </property>
+        
+        <!-- Atributos univaluados -->
+        <property name="atributos">
+            <map>
+                <entry key="idioma" value="es-ES"/>
+                <entry key="atributo1" value="valor1"/>
+            </map>
+        </property>
+        
+        <!-- Atributos multivaluados -->
+        <property name="atributosMultivalor">
+            <map>
+                <entry key="atributoMv1">
+                    <list>
+                        <value>valorMV1</value>
+                        <value>valorMV2</value>
+                    </list>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!-- Estrategia para convertir el nombre de usuario pre-autenticado en un nombre de usuario para nuestra aplicacion -->
+    <bean id="transfUsername" class="com.inditex.arquitectura.componentes.webapp.util.EstrategiaTransformacionNombreUsuarioWas2Win" />
+
+    <!-- Proveedor de roles que emplea un mapa como almacenamiento de los mismos, apto para pruebas -->
+    <bean id="roleUtil" class="com.inditex.arquitectura.componentes.webapp.util.RoleUtilMap">
+        <property name="defaultUser" value="inditex"/>
+        <property name="userRoles">
+            <map>
+                <!-- Usuario inditex -->
+                <entry key="inditex">
+                    <list>
+                        <value>administrador</value>
+                        <value>usuario</value>
+                        <value>reglasdistonline.consulta</value>
+                        <value>reglasdistonline.reserva</value>
+                        <value>reglasdistonline.recargaconfig</value>
+                    </list>
+                </entry>
+                <!-- Usuario otro -->
+                <entry key="otro">
+                    <list>
+                        <value>usuario</value>
+                        <value>reglasdistonline.consulta</value>
+                    </list>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!-- TimerManager para proceso periodico gestionado por SPRING -->
+    <bean id="timermanager" class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">
+        <property name="poolSize" value="1" />
+    </bean>
+
+    <bean id="hiloConfiguracion" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.configuracion.api.impl.ConfiguracionCancelacionImpl" />
+    <bean id="hiloExpirados" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.configuracion.api.impl.ConfiguracionExpiradosImpl" />
+
+    <task:scheduled-tasks scheduler="timermanager">
+        <task:scheduled ref="hiloConfiguracion" method="run" fixed-delay="${minutosChequeoCancelaciones}" />
+        <task:scheduled ref="hiloExpirados" method="run" fixed-delay="${minutosChequeoExpiraciones}" />
+    </task:scheduled-tasks>
+
+    <!-- Spring Executor para el ListenerContainer local implementacion spring-->
+	<bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="15" />
+		<property name="maxPoolSize" value="30" />
+		<property name="queueCapacity" value="500" />
+	</bean>
+
+</beans>

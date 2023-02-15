@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Data source obtenida mediante JNDI tal cual se indica en el fichero de recursos del servidor de aplicaciones -->
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean" p:jndiName="java:comp/env/jdbc/ECOMAPPWEB-CustomerLoyaltyEngine"/>
+
+
+    <!-- Configuracion a partir de parametros env-entry -->
+    <bean id="jndiPropertyPlaceholder" class="com.inditex.common.business.config.JndiPropertyPlaceholderConfigurer">
+        <property name="jndiOverride" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
+    <!-- Identificador de la aplicacion en el SSO para autorizacion y configuracion de auditoria -->
+    <bean id="aplicacionSSO" class="java.lang.String">
+        <constructor-arg value="${applicationId}"/>
+    </bean>
+
+    <!-- Proveedor de nombres de usuario que devuelve el nombre del principal pre-autenticado por el servidor de aplicaciones -->
+    <bean id="userNameProvider" class="com.inditex.arquitectura.componentes.webapp.util.UserNamePlataformaSsoProvider"/>
+
+    <!-- Proveedor de mapeos entre nombre de usuario y principal que emplea el cliente de servicios de Plataforma SSO para obtener la informacion -->
+    <bean id="principalProvider" class="com.inditex.arquitectura.componentes.webapp.util.NameToUserInformationProvider">
+        <property name="applicationName" ref="aplicacionSSO"/>
+    </bean>
+
+    <!-- Estrategia para convertir el nombre de usuario pre-autenticado en un nombre de usuario para nuestra aplicacion -->
+    <bean id="transfUsername" class="com.inditex.arquitectura.componentes.webapp.util.EstrategiaTransformacionNombreUsuarioWas2Win" />
+
+    <!-- Proveedor de roles que emplea Plataforma SSO para obtener los roles -->
+    <bean id="roleUtil" class="com.inditex.arquitectura.componentes.webapp.util.RoleUtilPlataformaSso">
+        <property name="applicationName" ref="aplicacionSSO"/>
+    </bean>
+
+    <!-- TimerManager para proceso periodico gestionado por WAS -->
+    <bean id="timerFactory" class="org.springframework.scheduling.commonj.TimerManagerFactoryBean">
+        <property name="resourceRef" value="true"/>
+        <property name="timerManagerName" value="java:comp/env/tm/ECOMAPPWEB-CustomerLoyaltyEngine"/>
+        <property name="scheduledTimerListeners">
+            <list>
+                <ref bean="runnableListenerHiloCancelacion"/>
+                <ref bean="runnableListenerHiloExpiracion"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="hiloCancelacion" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.configuracion.api.impl.ConfiguracionCancelacionImpl"></bean>
+    <bean id="hiloExpiracion" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.configuracion.api.impl.ConfiguracionExpiradosImpl"></bean>
+
+    <!-- CONFIGURACION PARA WAS -->
+    <bean id="milisegundosChequeoCancelacion_Long" class="java.lang.Long">
+    	<constructor-arg index="0" value="${minutosChequeoCancelaciones}"/>
+	</bean>
+	
+	<bean id="milisegundosChequeoExpiracion_Long" class="java.lang.Long">
+    	<constructor-arg index="0" value="${minutosChequeoExpiraciones}"/>
+	</bean>
+	
+    <bean id="runnableListenerHiloCancelacion" class="org.springframework.scheduling.commonj.ScheduledTimerListener">
+        <property name="delay" value="0"/>
+        <property name="period" ref="milisegundosChequeoCancelacion_Long"/>
+        <property name="runnable" ref="hiloCancelacion"/>
+    </bean>
+    
+    <bean id="runnableListenerHiloExpiracion" class="org.springframework.scheduling.commonj.ScheduledTimerListener">
+        <property name="delay" value="0"/>
+        <property name="period" ref="milisegundosChequeoExpiracion_Long"/>
+        <property name="runnable" ref="hiloExpiracion"/>
+    </bean>
+    
+    <!-- Spring Executor para el ListenerContainer: hace referencia al work manager definido en el WAS -->
+    <bean id="executor" class="org.springframework.scheduling.commonj.WorkManagerTaskExecutor">    
+      <property name="workManagerName" value="java:comp/env/wm/ECOMAPPWEB-CustomerLoyaltyEngine"/>
+    </bean>
+
+</beans>

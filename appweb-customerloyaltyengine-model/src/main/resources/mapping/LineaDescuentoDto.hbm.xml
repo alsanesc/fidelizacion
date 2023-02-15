@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-abr-2011 12:02:46 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping>
+    <class name="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.LineaDescuentoDto" table="LINEA_DESCUENTO" schema="DESCUENTOS">
+    	<composite-id name="idLineaPedido" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.PrimaryKeyLineaPedidoDto">
+    		<key-property name="idLineaDescuento" type="java.lang.Long" column="ID_LINEA_DESCUENTO" />
+    		<key-property name="idInstalacion" type="java.lang.Integer" column="ID_INSTALACION" />
+    	</composite-id>
+    	<component name="idDescuento" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.PrimaryKeyDescuentoDto">
+    		<property name="idDescuento" type="java.lang.Long" column="ID_DESCUENTO" not-null="true" />
+    		<property name="idInstalacion" type="java.lang.Integer" column="ID_INSTALACION_DESCUENTO" not-null="true" />
+    	</component>
+    	
+        <property name="codigoLineaPedidoExterno" type="java.lang.String" column="CODIGO_LINEA_PEDIDO_EXTERNO" not-null="true" length="100" />
+        <property name="idTipoLineaPedido" type="java.lang.Short" column="ID_TIPO_LINEA_PEDIDO" not-null="true" />
+        <property name="partNumber" type="java.lang.String" column="PARTNUMBER" not-null="true" length="100" />
+        <property name="numeroUnidades" type="java.lang.Integer" column="NUMERO_UNIDADES" not-null="true" />
+        <property name="numeroUnidadesCapturadas" type="java.lang.Integer" column="NUMERO_UNIDADES_CAPTURADAS" not-null="false" />
+        <property name="numeroUnidadesDevueltas" type="java.lang.Integer" column="NUMERO_UNIDADES_DEVUELTAS" not-null="false" />
+        <property name="importeUnitario" type="java.math.BigDecimal" column="IMPORTE_UNITARIO" not-null="true" precision="20" scale="5" />
+        <property name="importeTotal" type="java.math.BigDecimal" column="IMPORTE_TOTAL" not-null="true" precision="20" scale="5" />
+        <property name="idEstadoDescuento" type="java.lang.Short" column="ID_ESTADO_DESCUENTO" not-null="true" />
+        <component name="idDetalleDescuento" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.PrimaryKeyDetalleDescuentoDto">
+	       	<property name="idDetalleDescuento" type="java.lang.Long" column="ID_DETALLE_DESCUENTO" not-null="false" />
+	       	<property name="idInstalacion" type="java.lang.Integer" column="ID_INSTALACION_DETALLE_DESCUENTO" not-null="false" />
+        </component>
+    </class>
+</hibernate-mapping>

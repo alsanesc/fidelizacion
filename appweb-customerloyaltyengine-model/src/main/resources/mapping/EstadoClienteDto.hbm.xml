@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-abr-2011 12:02:46 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping>
+    <class name="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.EstadoClienteDto" table="ESTADO_CLIENTE" schema="DESCUENTOS">
+        <id name="idEstadoCliente" type="java.lang.Short" column="ID_ESTADO_CLIENTE" />
+        <property name="descripcion" type="java.lang.String" column="DESCRIPCION" not-null="true" length="40" />
+    </class>
+</hibernate-mapping>

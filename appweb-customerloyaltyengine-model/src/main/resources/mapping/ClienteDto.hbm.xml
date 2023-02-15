@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-abr-2011 12:02:46 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping>
+    <class name="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.ClienteDto" table="CLIENTE" schema="DESCUENTOS">
+    	<composite-id name="idCliente" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.PrimaryKeyClienteDto">
+    		<key-property name="idCliente" type="java.lang.Long" column="ID_CLIENTE" />
+    		<key-property name="idInstalacion" type="java.lang.Integer" column="ID_INSTALACION" />
+    	</composite-id>
+        <property name="codClienteWalletMarca" type="java.lang.String" column="COD_CLIENTE_WALLET_MARCA" not-null="false" length="255" />
+        <property name="idCadena" type="java.lang.Short" column="ID_CADENA" not-null="false" />
+        <property name="idPais" type="java.lang.Short" column="ID_PAIS" not-null="false" />
+        <property name="idEstadoCliente" type="java.lang.Short" column="ID_ESTADO_CLIENTE" not-null="true" />
+        <property name="idTipoCliente" type="java.lang.Short" column="ID_TIPO_CLIENTE" not-null="true" />
+        <property name="fechaHoraAlta" type="java.sql.Timestamp" column="FECHA_HORA_ALTA" not-null="true" />
+        <property name="fechaHoraBaja" type="java.sql.Timestamp" column="FECHA_HORA_BAJA" not-null="false" />
+    </class>
+</hibernate-mapping>

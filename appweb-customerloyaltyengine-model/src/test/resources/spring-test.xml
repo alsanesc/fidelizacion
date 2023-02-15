@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+               http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+               http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+               http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    
+    <!-- Configuracion de beans -->
+    <!-- Enable usage of @Autowired. -->
+    <context:annotation-config />
+    
+    <!-- Component scan para que busque las clases anotadas para incluir en el contexto de spring -->
+    <context:component-scan base-package="com.inditex.ecom.appwebcustomerloyaltyengine.model.*" />
+
+    <!-- Configuracion dependiente del despliegue -->
+
+    <!-- Data source obtenida mediante JNDI tal cual se indica en el fichero 
+        de recursos del servidor de aplicaciones -->
+    <bean id="dataSourceTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.ibm.db2.jcc.DB2Driver" />
+<!--         <property name="url" value="jdbc:db2://axdesrfid:50001/INDITEX:currentSchema=DESCUENTOS;retrieveMessagesFromServerOnGetMessage=true;fullyMaterializeLobData=true;fullyMaterializeInputStreams=true;progressiveStreaming=2;concurrentAccessResolution=1;" /> -->
+<!--         <property name="username" value="db2i1" /> -->
+<!--         <property name="password" value="inditex" /> -->
+		<property name="url" value="jdbc:db2://127.0.0.1:50000/INDITEX:currentSchema=DESCUENTOS;retrieveMessagesFromServerOnGetMessage=true;fullyMaterializeLobData=true;fullyMaterializeInputStreams=true;progressiveStreaming=2;concurrentAccessResolution=1;" />
+        <property name="username" value="db2admin" />
+        <property name="password" value="admin" />
+    </bean>
+
+    <!-- Session factory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" p:dataSource-ref="dataSourceTest">
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+
+                <!-- Ver: http://stackoverflow.com/questions/7500030/spring-hibernate-exception-createcriteria-is-not-valid-without-active-transacti -->
+                <!-- <prop key="hibernate.current_session_context_class">thread</prop> -->
+
+                <prop key="hibernate.jdbc.batch_size">0</prop>
+                <prop key="hibernate.jdbc.batch_versioned_data">true</prop>
+                <prop key="hibernate.jdbc.use_streams_for_binary">true</prop>
+                <prop key="hibernate.jdbc.use_scrollable_resultset">true</prop>
+                <prop key="hibernate.jdbc.use_get_generated_keys">true</prop>
+
+                <prop key="hibernate.max_fetch_depth">0</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+                <prop key="hibernate.use_sql_comments">${hibernate.use_sql_comments}</prop>
+                <prop key="hibernate.generate_statistics">true</prop>
+            </props>
+        </property>
+
+        <property name="mappingLocations">
+            <list>
+                <value>classpath:mapping/*.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Transaccionalidad -->
+    <!-- Transaction manager for a single Hibernate SessionFactory. -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" p:sessionFactory-ref="sessionFactory" />
+
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+    <!-- Ficheros de internacionalización de la capa Web Java -->
+    <bean id="webMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:basenames="ApplicationResources" p:useCodeAsDefaultMessage="true" />
+
+    <bean id="modelMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:useCodeAsDefaultMessage="true">
+        <property name="basenames">
+            <list>
+                <value>ModelResources</value>
+                <value>OvalRedefinedMessages</value>
+                <value>net.sf.oval.Messages</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- -->
+    <!-- Validator (OVal) -->
+    <!-- -->
+    <import resource="spring-validator-test.xml" />
+
+</beans>

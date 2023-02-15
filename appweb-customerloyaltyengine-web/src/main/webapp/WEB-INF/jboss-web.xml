@@ -1,0 +1,23 @@
+<jboss-web>
+    <security-domain>java:/jaas/ItxRealm</security-domain>
+ 
+    <!-- Desabilitamos en DataSource de la BD CPT como recurso JNDI-->
+    <!-- Si se usa el mismo DataSource la aplicacion y el gestor de tareas -->
+    <!-- marca un bloqueo con la tabla calendario, cuando la aplicacion lee el estado -->
+    <!-- de una tarea y el gestor de tarea esta haciendo actualizaciones en la tabla calendario -->
+
+    <resource-ref>
+        <res-ref-name>jdbc/ECOMAPPWEB-CustomerLoyaltyEngine</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <jndi-name>java:jdbc/ECOMAPPWEB-CustomerLoyaltyEngine</jndi-name>
+    </resource-ref>
+
+     <!-- <class-loading java2ClassLoadingCompliance="false">
+        <loader-repository>
+            com.inditex.cpt.loaderrepository:loader=CPT.war
+        <loader-repository-config>
+            java2ParentDelegation=false
+        </loader-repository-config>
+        </loader-repository>
+    </class-loading>  -->
+</jboss-web>

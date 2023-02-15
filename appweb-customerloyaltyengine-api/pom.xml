@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>com.inditex.ecom.appwebcustomerloyaltyengine</groupId>
+		<artifactId>appweb-customerloyaltyengine</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	
+	<artifactId>appweb-customerloyaltyengine-api</artifactId>
+	
+	<packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>http://www.inditex.com</url>
+
+	<build>
+		<finalName>${pom.artifactId}</finalName>
+	</build>
+	
+	 <dependencies>
+	 	<dependency>
+	 		<groupId>com.google.code.gson</groupId>
+  			<artifactId>gson</artifactId>
+  			<version>2.1</version>
+	 	</dependency>
+	 	
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+	 
+        <!-- Validacion -->
+        <dependency>
+            <groupId>net.sf.oval</groupId>
+            <artifactId>oval</artifactId>
+        </dependency>
+        
+        <!-- Spring framework -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        
+        <!-- Queues -->
+        <dependency>
+        	<groupId>javax.jms</groupId>
+	        <artifactId>jms</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>

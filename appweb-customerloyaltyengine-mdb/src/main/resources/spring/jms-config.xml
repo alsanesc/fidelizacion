@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+              http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd
+              http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+              http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+              
+    <!-- factoria de conexiones JNDI -->
+    <jee:jndi-lookup id="connectionFactory" jndi-name="jms/ECOMAPPWEB-CustomerLoyaltyEngineCF" />
+
+    <!-- Colas JNDI -->
+  	<jee:jndi-lookup id="queue" jndi-name="jms/ECOMAPPWEB-CustomerLoyaltyEngineQ1" />
+  	
+  	<util:map id="listaColas" scope="singleton" value-type="javax.jms.Queue" map-class="java.util.HashMap">
+  		<entry key="queue" value-ref="queue" />
+  	</util:map>
+    
+	<!-- Clase que implementa el listener -->
+	<bean id="messageListener" class="com.inditex.ecom.appwebcustomerloyaltyengine.mdb.listener.GestionPedidosMQ" />
+	
+    <!-- Template para envio de mensajes -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="sessionTransacted" value="true" />
+	</bean>
+	
+	<!-- Transaction manager local -->
+	<bean id="JmsTransactionManager" class="org.springframework.jms.connection.JmsTransactionManager">
+		<property name="connectionFactory" ref="connectionFactory" />
+	</bean>
+	
+	<!-- Listener -->
+	<bean id="jmsDestinationContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="queue" />
+		<property name="TaskExecutor" ref="executor" />
+		<property name="messageListener" ref="messageListener" />
+		<property name="transactionManager" ref="JmsTransactionManager" />
+		<property name="concurrentConsumers" value="50" />
+		<property name="maxConcurrentConsumers" value="50" />
+	</bean>
+	
+	<!-- Exponer beans por JMX -->
+	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+		<property name="autodetect" value="false" />
+	</bean>
+
+</beans>

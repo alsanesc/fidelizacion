@@ -1,0 +1,90 @@
+//
+// ${java.home} apunta al directorio de la JRE del servidor de aplicaciones (ej: /opt/IBM/WebSphere/AppServer/java/jre)
+// ${user.install.root} apunta al directorio del perfil (ej: /opt/IBM/WebSphere/AppServer/profiles/MI_PERFIL)
+// ${was.install.root} apunta al directorio de instalación del servidor de aplicaciones (ej: /opt/IBM/WebSphere/AppServer)
+// ${user.home} apunta al directorio personal del usuario que ejecuta el servidor de aplicaciones (ej: /home/wasadmin)
+// ${current.cell.name} nombre de la celda
+// ${current.node.name} nombre del nodo
+// ${current.server.name} nombre del servidor
+// ${app.installed.path} ruta de instalación de la aplicación
+// ${was.module.path} ruta del módulo web (solo aplicable dentro de la sección [file:$]{webComponent})
+// ${/} separador de directorios.
+//
+
+grant codeBase "file:${application}" {
+
+    // Requerido por el log. Le damos acceso al directorio de logs
+    // Requerido por el log. Le damos acceso al directorio de logs CAMBIAR POR LA RUTA A TUS LOGS. 
+    //   DEBE ESTAR ALINEADO CON LA PROPIEDAD "contextRoot" del pom.xml global
+    permission java.io.FilePermission "${/}appserv${/}data${/}logs${/}ECOMAPPWEB-CustomerLoyaltyEngine", "read,write";
+    permission java.io.FilePermission "${/}appserv${/}data${/}logs${/}ECOMAPPWEB-CustomerLoyaltyEngine${/}-", "write,read,delete";
+
+    // Requerido por los datos/upload. Le damos acceso al directorio de upload
+    permission java.io.FilePermission "${/}appserv${/}data${/}datos${/}ECOMAPPWEB-CustomerLoyaltyEngine", "read,write";
+    permission java.io.FilePermission "${/}appserv${/}data${/}datos${/}ECOMAPPWEB-CustomerLoyaltyEngine${/}-", "write,read,delete";
+
+
+    // Permiso requerido por algunas librerias de AOP
+    permission java.io.FilePermission "${/}", "read";
+
+    // Permisos de lectura sobre ficheros de configuracion
+    permission java.io.FilePermission "${java.home}${/}lib${/}wsdl.properties", "read";
+    permission java.io.FilePermission "${java.home}${/}lib${/}xerces.properties", "read";
+    permission java.io.FilePermission "${java.home}${/}lib${/}jaxp.properties", "read";
+    permission java.io.FilePermission "${java.home}${/}lib${/}jaxm.properties", "read";
+    // Mail 
+    permission java.io.FilePermission "${java.home}${/}lib${/}javamail.providers", "read";
+    permission java.io.FilePermission "${java.home}${/}lib${/}javamail.address.map", "read";
+    
+    permission com.ibm.oti.shared.SharedClassPermission "java.net.URLClassLoader", "read,write";
+    
+    permission java.io.FilePermission "${user.home}${/}.mailcap", "read";
+    permission java.io.FilePermission "${java.home}${/}lib${/}mailcap", "read";
+
+    permission java.io.FilePermission "${was.install.root}${/}properties", "read";
+    permission java.io.FilePermission "${was.install.root}${/}properties${/}-", "read";
+
+    permission java.io.FilePermission "${user.install.root}${/}properties", "read";
+    permission java.io.FilePermission "${user.install.root}${/}properties${/}-", "read";
+
+
+    // Permisos requeridos por SSO en WAS 7
+    permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.security.token.SingleSignonTokenImpl * \"*\"", "read";
+    permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.security.token.AuthenticationTokenImpl * \"*\"","read";
+    permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.security.token.AuthorizationTokenImpl * \"*\"","read";
+    permission javax.security.auth.AuthPermission "wssecurity.getRunAsSubject";
+    permission javax.security.auth.AuthPermission "getPolicy";
+    permission java.security.SecurityPermission "printIdentity";
+
+    // Permisos requeridos por Spring para usar reflexion
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+    permission java.lang.RuntimePermission "accessDeclaredMembers";
+    permission java.lang.RuntimePermission "reflectionFactoryAccess";
+
+    // Permisos requeridos por Hibernate para leer propiedades del entorno
+    permission java.util.PropertyPermission "*", "read, write";
+    permission java.lang.RuntimePermission "getenv.*";
+
+    // Permisos requeridos por la libreria cglib
+    permission java.lang.RuntimePermission "getProtectionDomain";
+
+    // Permisos requeridos por taglibs standard o aspectj, para manipular class loader.
+    permission java.lang.RuntimePermission "getClassLoader";
+    permission java.lang.RuntimePermission "createClassLoader";
+    permission java.lang.RuntimePermission "setContextClassLoader";
+    permission java.lang.RuntimePermission "modifyThreadGroup";
+    permission java.lang.RuntimePermission "modifyThread";
+    permission java.lang.RuntimePermission "accessClassInPackage.*";
+
+    // Reflexion y AOP
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.reflect";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.reflect.generics.reflectiveObjects";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.text";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.net.www.protocol.http";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.net.www";
+
+    // Uso de MBeans
+    permission javax.management.MBeanServerPermission "createMBeanServer";
+    
+
+};

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-abr-2011 12:02:46 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping>
+    <class name="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.RecursoClienteDto" table="RECURSO_CLIENTE" schema="DESCUENTOS">
+		<composite-id name="idRecurso" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.PrimaryKeyRecursoDto">
+			<key-property name="idRecurso" type="java.lang.Long" column="ID_RECURSO" />
+			<key-property name="idInstalacion" type="java.lang.Integer" column="ID_INSTALACION_RECURSO" />
+		</composite-id>
+		<component name="idCliente" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.PrimaryKeyClienteDto">
+			<property name="idCliente" type="java.lang.Long" column="ID_CLIENTE" not-null="true" />
+			<property name="idInstalacion" type="java.lang.Integer" column="ID_INSTALACION_CLIENTE" not-null="true" />
+		</component>
+        <property name="fechaHoraAlta" type="java.util.Date" column="FECHA_HORA_ALTA" not-null="true" />
+        <property name="fechaHoraBaja" type="java.util.Date" column="FECHA_HORA_BAJA" not-null="false" />
+    </class>
+</hibernate-mapping>

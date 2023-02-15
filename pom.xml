@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.inditex.arquitectura</groupId>
+        <artifactId>AQSW-SuperPom</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <groupId>com.inditex.ecom.appwebcustomerloyaltyengine</groupId>
+    <artifactId>appweb-customerloyaltyengine</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>http://www.inditex.com</url>
+
+    <!-- Propiedades -->
+    <properties>
+
+        <!-- Versiones de librerias -->
+        <slf4j.version>1.6.4</slf4j.version>
+        <logback.version>1.0.7</logback.version>
+        <commons.logging.version>1.1.1</commons.logging.version>
+        <commons.logging.api.version>1.0.4</commons.logging.api.version>
+        <commons.lang.version>2.6</commons.lang.version>
+        <commons.io.version>1.4</commons.io.version>
+        <commons.fileupload.version>1.2.2</commons.fileupload.version>
+        <commons.dbcp.version>1.2.2</commons.dbcp.version>
+        <spring.version>4.2.1.RELEASE</spring.version>
+        <spring.security.version>4.0.2.RELEASE</spring.security.version>
+        <aspectj.version>1.6.12</aspectj.version>
+        <hibernate.version>3.6.9.Final</hibernate.version>
+        <hibernate.tools.version>3.2.3.GA</hibernate.tools.version>
+        <tiles.version>2.2.2</tiles.version>
+        <jackson.version>1.9.3</jackson.version>
+        <jersey.media.json.jackson.version>2.12</jersey.media.json.jackson.version>
+        <oval.version>1.80</oval.version>
+        <aopalliance.version>1.0</aopalliance.version>
+        <cglib.version>2.2</cglib.version>
+        <javassist.version>3.12.0.GA</javassist.version>
+        <inditex.ComponenteSeguridad.version>1.5.4</inditex.ComponenteSeguridad.version>
+        <inditex.PlataformaSSOv2WebServiceClient.version>2.5.17.0</inditex.PlataformaSSOv2WebServiceClient.version>
+        <inditex.auditoria.version>1.1.11</inditex.auditoria.version>
+        <inditex.dao.version>2.0.0</inditex.dao.version>
+        <inditex.business.version>1.1.0</inditex.business.version>
+        <servlet.api.version>2.5</servlet.api.version>
+        <jsp.api.version>2.1</jsp.api.version>
+        <jstl.version>1.2</jstl.version>
+        <jta.version>1.1</jta.version>
+        <db2.driver.version>4.3.111</db2.driver.version>
+        <junit.version>4.10</junit.version>
+        <mockito.version>1.9.0</mockito.version>
+        <h2.driver.version>1.3.163</h2.driver.version>
+        <maven.war.version>2.0.1</maven.war.version>
+        <commons.collections4.version>4.0</commons.collections4.version>
+        <javax.jms.version>1.1</javax.jms.version>
+        <javatuples.version>1.1</javatuples.version>
+        <com.ibm.mq>6.0.1.1</com.ibm.mq>
+
+        <!-- Versiones de plugins especificos -->
+        <smartsprites.maven.plugin.version>1.0</smartsprites.maven.plugin.version>
+        <yuicompressor.maven.plugin.version>1.1</yuicompressor.maven.plugin.version>
+        <replacer.version>1.5.0</replacer.version>
+        <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
+        <native2ascii.maven.plugin.version>1.0-beta-1</native2ascii.maven.plugin.version>
+
+        <!-- =========================================================== -->
+        <!-- Model properties -->
+        <!-- =========================================================== -->
+        <!-- <aplicacionSSO>AppReglasDistOnline</aplicacionSSO> -->
+        <aplicacionSSO>AppReglasDistOnline</aplicacionSSO>
+        <!-- JDBC driver properties -->
+        <jdbcDriver.groupId>com.ibm.db2</jdbcDriver.groupId>
+        <jdbcDriver.artifactId>db2jcc</jdbcDriver.artifactId>
+        <jdbcDriver.version>${db2.driver.version}</jdbcDriver.version>
+        <jdbcDriver.className>com.ibm.db2.jcc.DB2Driver</jdbcDriver.className>
+
+		<!-- Data source properties -->
+        <dataSource.user>db2admin</dataSource.user>
+        <dataSource.password>admin</dataSource.password>
+        <dataSource.url>jdbc:db2://127.0.0.1:50000/INDITEX:currentSchema=DESCUENTOS;retrieveMessagesFromServerOnGetMessage=true;fullyMaterializeLobData=true;fullyMaterializeInputStreams=true;progressiveStreaming=2;concurrentAccessResolution=1;</dataSource.url>
+
+<!-- 		<dataSource.user>db2i1</dataSource.user> -->
+<!--         <dataSource.password> </dataSource.password> -->
+<!--         <dataSource.url>jdbc:db2://axdesrfid:50001/INDITEX:currentSchema=DESCUENTOS;retrieveMessagesFromServerOnGetMessage=true;fullyMaterializeLobData=true;fullyMaterializeInputStreams=true;progressiveStreaming=2;concurrentAccessResolution=1;</dataSource.url> -->
+
+        <!-- Test datasource properties -->
+        <testDataSource.user>${dataSource.user}</testDataSource.user>
+        <testDataSource.password>${dataSource.password}</testDataSource.password>
+        <testDataSource.url>${dataSource.url}</testDataSource.url>
+
+        <!-- Hibernate properties -->
+        <hibernate.dialect>org.hibernate.dialect.DB2Dialect</hibernate.dialect>
+        <!-- Hibernate Tools -->
+        <entities.packagename>${project.groupId}.model.catalog</entities.packagename>
+        <dataSource.autocommit>true</dataSource.autocommit>
+
+    </properties>
+
+    <!-- =========================================================== -->
+    <!-- Profiles -->
+    <!-- =========================================================== -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Nombre de la aplicacion -->
+                <finalName>ECOMAPPWEB-CustomerLoyaltyEngine</finalName>
+                <!-- Contexto de la aplicacion -->
+                <contextRoot>${finalName}</contextRoot>
+                <!-- =========================================================== -->
+                <!-- Model properties -->
+                <!-- =========================================================== -->
+                <!-- Hibernate properties -->
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <hibernate.format_sql>true</hibernate.format_sql>
+                <hibernate.use_sql_comments>true</hibernate.use_sql_comments>
+            </properties>
+
+        </profile>
+        <profile>
+            <id>was</id>
+            <properties>
+                <!-- Nombre de la aplicacion -->
+                <finalName>ECOMAPPWEB-CustomerLoyaltyEngine</finalName>
+                <!-- Contexto de la aplicacion -->
+                <contextRoot>${finalName}</contextRoot>
+                <!-- =========================================================== -->
+                <!-- Model properties -->
+                <!-- =========================================================== -->
+                <!-- Hibernate properties -->
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <hibernate.format_sql>false</hibernate.format_sql>
+                <hibernate.use_sql_comments>false</hibernate.use_sql_comments>
+            </properties>
+        </profile>
+        
+    </profiles>
+
+    <!-- Repositorios -->
+    <repositories>
+        <repository>
+            <id>maven-inditex-repository</id>
+            <name>Inditex Repository for Maven</name>
+            <url>https://axinartifactory.central.inditex.grp/artifactory/inditex-public</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven-inditex-repository</id>
+            <name>Inditex Repository for Maven</name>
+            <url>https://axinartifactory.central.inditex.grp/artifactory/inditex-public</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- Distribucion: releasesRepositoryUrl: http://axinic.central.inditex.grp/artifactory/libs-release-local snapshotRepositoryUrl:
+        http://axinic.central.inditex.grp/artifactory/libs-snapshot-local siteDeployBaseURL: -->
+    <distributionManagement>
+        <repository>
+            <id>maven-inditex-repository</id>
+            <name>maven-inditex-repository</name>
+            <url>${releasesRepositoryUrl}</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven-inditex-repository</id>
+            <name>maven-inditex-repository</name>
+            <url>${snapshotRepositoryUrl}</url>
+        </snapshotRepository>
+        <site>
+            <id>maven-inditex-repository</id>
+            <name>maven-inditex-repository</name>
+            <url>${siteDeployBaseURL}/MotorReglasDistribucionOnlineWS</url>
+        </site>
+    </distributionManagement>
+
+    <!-- Definicion de modulos -->
+
+    <!-- Dependencias -->
+    <dependencyManagement>
+        <dependencies>
+        
+            <!-- Logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+			
+            <dependency><!-- Excluye commons-logging -->
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+                <scope>provided</scope>
+            </dependency>
+			
+            <dependency><!-- Excluye commons-logging-api -->
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging-api</artifactId>
+                <version>${commons.logging.api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Librerias comunes -->
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons.lang.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons.fileupload.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons.collections4.version}</version>
+            </dependency>
+
+            <!-- Spring framework -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jms</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <!-- Tiles (implementacion patron Composite-View) -->
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-jsp</artifactId>
+                <version>${tiles.version}</version>
+            </dependency>
+
+            <!-- Jackson (Java <-> JSON) -->
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            
+            <dependency>
+				<groupId>org.glassfish.jersey.media</groupId>
+				<artifactId>jersey-media-json-jackson</artifactId>
+				<version>${jersey.media.json.jackson.version}</version>
+			</dependency>
+            
+            <!-- Validacion -->
+            <dependency>
+                <groupId>net.sf.oval</groupId>
+                <artifactId>oval</artifactId>
+                <version>${oval.version}</version>
+            </dependency>
+            
+            <!-- AOP -->
+            <dependency>
+                <groupId>aopalliance</groupId>
+                <artifactId>aopalliance</artifactId>
+                <version>${aopalliance.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>${cglib.version}</version>
+            </dependency>
+
+            <!-- Hibernate -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
+
+            <!-- Spring security -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+
+            <!-- Librerias del SSO Inditex -->
+            <dependency>
+                <groupId>com.inditex.arquitectura</groupId>
+                <artifactId>ComponenteSeguridad</artifactId>
+                <version>${inditex.ComponenteSeguridad.version}</version>
+            </dependency>
+			
+            <dependency>
+                <groupId>com.inditex.arquitectura</groupId>
+                <artifactId>PlataformaSSOv2WebServiceClient</artifactId>
+                <version>${inditex.PlataformaSSOv2WebServiceClient.version}</version>
+            </dependency>
+			
+            <dependency><!-- Auditoria -->
+                <groupId>com.inditex.arquitectura</groupId>
+                <artifactId>auditoria</artifactId>
+                <version>${inditex.auditoria.version}</version>
+            </dependency>
+
+            <!-- Librerias comunes Inditex -->
+            <dependency><!-- DAOs -->
+                <groupId>com.inditex.common</groupId>
+                <artifactId>dao</artifactId>
+                <version>${inditex.dao.version}</version>
+            </dependency>
+			
+            <dependency><!-- Business Logic -->
+                <groupId>com.inditex.common</groupId>
+                <artifactId>business</artifactId>
+                <version>${inditex.business.version}</version>
+            </dependency>
+
+            <!-- Dependencias del contenedor -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${servlet.api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+			
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>jsp-api</artifactId>
+                <version>${jsp.api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+			
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>${jstl.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>javax.transaction</groupId>
+                <artifactId>jta</artifactId>
+                <version>${jta.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Drivers de base de datos para desarrollo y pruebas -->
+            <dependency>
+                <groupId>${jdbcDriver.groupId}</groupId>
+                <artifactId>${jdbcDriver.artifactId}</artifactId>
+                <version>${jdbcDriver.version}</version>
+            </dependency>
+
+            <!-- Dependencias para pruebas -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+            </dependency>
+			
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+			
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.driver.version}</version>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+			    <groupId>org.apache.activemq</groupId>
+			    <artifactId>activemq-all</artifactId>
+			    <version>5.5.1</version>
+			</dependency>
+
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-commonj_1.1_spec</artifactId>
+                <version>1.0</version>
+            </dependency>
+			
+            <dependency>
+	        	<groupId>javax.jms</groupId>
+		        <artifactId>jms</artifactId>
+		        <version>${javax.jms.version}</version>
+		    </dependency>
+		    
+		    <!-- Libreria para manejar datos ternarios -->
+	       	<dependency>
+	       		<groupId>org.javatuples</groupId>
+	       		<artifactId>javatuples</artifactId>
+	       		<version>${javatuples.version}</version>
+	       	</dependency>
+	       	
+	       	<!-- Dependencias para WebSphere MQ -->
+	       	<dependency>
+	            <groupId>com.ibm</groupId>
+	            <artifactId>mq</artifactId>
+	            <version>${com.ibm.mq}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>com.ibm</groupId>
+	            <artifactId>mq-jms</artifactId>
+	            <version>${com.ibm.mq}</version>
+	        </dependency>
+        </dependencies>
+        
+        
+    </dependencyManagement>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Ignore some goals to allow m2eclipse to easily import the project. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>${lifecycle-mapping.version}</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-ear-plugin</artifactId>
+                                        <versionRange>2.3.1</versionRange>
+                                        <goals>
+                                            <goal>generate-application-xml</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>native2ascii-maven-plugin</artifactId>
+                                        <versionRange>${native2ascii.maven.plugin.version}</versionRange>
+                                        <goals>
+                                            <goal>native2ascii</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+
+                <!-- native2ascii. -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>native2ascii-maven-plugin</artifactId>
+                    <version>${native2ascii.maven.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <modules>
+        <module>appweb-customerloyaltyengine-api</module>
+        <module>appweb-customerloyaltyengine-model</module>
+        <module>appweb-customerloyaltyengine-mdb</module>
+        <module>appweb-customerloyaltyengine-web</module>
+       	<module>appweb-customerloyaltyengine-ear</module>
+    </modules>
+</project>

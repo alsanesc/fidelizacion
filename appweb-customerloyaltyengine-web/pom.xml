@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.inditex.ecom.appwebcustomerloyaltyengine</groupId>
+        <artifactId>appweb-customerloyaltyengine</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <artifactId>appweb-customerloyaltyengine-web</artifactId>
+    <packaging>war</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>http://www.inditex.com</url>
+
+    <properties>
+        <scripts.compressed>scripts.js</scripts.compressed>
+        <css.compressed>styles.css</css.compressed>
+    </properties>
+
+    <build>
+        <finalName>ECOMAPPWEB-CustomerLoyaltyEngine</finalName>
+
+        <!-- =========================================================== -->
+        <!-- Filtering -->
+        <!-- =========================================================== -->
+        <resources>
+        	<!-- Filter Jetty configuration -->
+            <resource>
+                <directory>etc</directory>
+                <includes>
+                    <include>jetty-env.xml</include>
+                </includes>
+                <targetPath>../jetty</targetPath>
+                <filtering>true</filtering>
+            </resource>
+            <!-- Continue considering resources the files in src/main/resources, but without applying filtering. -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <includes>
+                                <include>**/*.jsp</include>
+                            </includes>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+            
+            <!-- Evitar el despliegue de los WAR en el repositorio corporativo -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!-- Jetty testing -->
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>jetty.port</name>
+                            <value>8090</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <webAppConfig>
+                        <contextPath>/${contextRoot}</contextPath>
+                        <jettyEnvXml>target/jetty/jetty-env.xml</jettyEnvXml>
+                        <defaultsDescriptor>${pom.basedir}/etc/webdefault.xml</defaultsDescriptor>
+                    </webAppConfig>
+                    <reload>manual</reload>
+                    <loginServices>
+                        <loginService implementation="org.eclipse.jetty.security.HashLoginService">
+                            <name>ItxRealm</name>
+                            <config>${pom.basedir}/etc/realm.properties</config>
+                        </loginService>
+                    </loginServices>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>${jdbcDriver.groupId}</groupId>
+                        <artifactId>${jdbcDriver.artifactId}</artifactId>
+                        <version>${jdbcDriver.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>commons-dbcp</groupId>
+                        <artifactId>commons-dbcp</artifactId>
+                        <version>${commons.dbcp.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>jstl</artifactId>
+                        <version>${jstl.version}</version>
+                    </dependency>
+                    
+                    <!-- WebsphereMQ -->
+                    <dependency>
+                        <groupId>com.ibm</groupId>
+                        <artifactId>mq</artifactId>
+                        <version>6.0.1.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.ibm</groupId>
+                        <artifactId>mq-jms</artifactId>
+                        <version>6.0.1.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.ibm.disthub2</groupId>
+                        <artifactId>dhbcore</artifactId>
+                        <version>6.0.1.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.resource</groupId>
+                        <artifactId>connector</artifactId>
+                        <version>1.0</version>
+                	</dependency>
+                </dependencies>
+            </plugin>
+            
+            <!-- Process i18 message files. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native2ascii-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>native2ascii-8859_1</id>
+                        <goals>
+                            <goal>native2ascii</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>8859_1</encoding>
+                            <includes>
+                                <include>ApplicationResources_en.properties</include>
+                                <include>ApplicationResources_es.properties</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- Perfil para desarrollo local -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>conf/dev</directory>
+                        <excludes>
+				       		<exclude>web.xml</exclude>
+			          	</excludes>
+                    </resource>
+                </resources>
+                <plugins>
+	                <plugin>
+	                    <groupId>org.apache.maven.plugins</groupId>
+	                    <artifactId>maven-war-plugin</artifactId>
+	                    <configuration>
+	                        <webXml>conf/dev/web.xml</webXml>
+	                    </configuration>
+	                </plugin>
+       			</plugins> 
+			</build>
+        </profile>
+        
+        <!-- Perfil para despliegue sobre Websphere -->
+        <profile>
+            <id>was</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>conf/was</directory>
+                        <excludes>
+			       			<exclude>web.xml</exclude>
+		            	</excludes>
+                    </resource>
+                </resources>
+                <plugins>
+                  <plugin>
+	              	<groupId>org.apache.maven.plugins</groupId>
+	                <artifactId>maven-war-plugin</artifactId>
+	                <configuration>
+	                	<webXml>conf/was/web.xml</webXml>
+	                </configuration>
+	              </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Perfil para compresión de ficheros BORRADO -->
+    </profiles>
+
+    <dependencies>
+    	<!-- Dependencias dentro del proyecto -->
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>${parent.artifactId}-mdb</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+    
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-commonj_1.1_spec</artifactId>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency><!-- Excluye commons-logging -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        
+        <dependency><!-- Excluye commons-logging-api -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging-api</artifactId>
+        </dependency>
+        
+        <!-- Jackson -->
+	    <dependency>
+		    <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-mapper-asl</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+		</dependency>
+
+        <!-- Librerias comunes -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+
+        <!-- Spring framework -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        
+        <!-- Tiles (implementacion patron Composite-View) -->
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-jsp</artifactId>
+        </dependency>
+
+        <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+
+        <!-- Spring security -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+        
+        <!-- Librerias del SSO Inditex -->
+        <dependency>
+            <groupId>com.inditex.arquitectura</groupId>
+            <artifactId>ComponenteSeguridad</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.inditex.arquitectura</groupId>
+            <artifactId>PlataformaSSOv2WebServiceClient</artifactId>
+        </dependency>
+
+        <!-- Dependencias del contenedor -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+        </dependency>
+        
+        <!-- Dependencias para WebSphere MQ -->
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>mq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>mq-jms</artifactId>
+        </dependency>
+    </dependencies>
+</project>

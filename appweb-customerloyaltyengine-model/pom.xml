@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.inditex.ecom.appwebcustomerloyaltyengine</groupId>
+        <artifactId>appweb-customerloyaltyengine</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <artifactId>appweb-customerloyaltyengine-model</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>http://www.inditex.com</url>
+    
+    <build>
+        <finalName>appweb-customerloyaltyengine-model</finalName>
+        <!-- =========================================================== -->
+        <!-- Filtering -->
+        <!-- =========================================================== -->
+        <resources>
+            <!-- Apply filtering to files matching the following expressions in src/main/resources. -->
+            <resource>
+                <directory>src/main/resources/spring</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>spring-model.xml</include>
+                </includes>
+                <targetPath>spring</targetPath>
+            </resource>
+            <!-- Hibernate Tools configuration -->
+            <resource>
+                <directory>etc/hibernate-tools</directory>
+                <includes>
+                    <include>database.properties</include>
+                    <include>hibernate.reveng.xml</include>
+                </includes>
+                <targetPath>../hibernate-tools</targetPath>
+                <filtering>true</filtering>
+            </resource>
+            <!-- Continue considering resources the files in src/main/resources, but without applying filtering. -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <testResources>
+            <!-- Apply filtering to files matching the following expressions in src/test/resources. -->
+            <testResource>
+                <directory>src/test/resources/spring</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>spring-test.xml</include>
+                </includes>
+                <targetPath>spring</targetPath>
+            </testResource>
+            <!-- Continue considering resources the files in src/test/resources, but without applying filtering. -->
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+
+        <plugins>
+        
+            <!-- Configuración para plugin Hibernate3 Maven Plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>hibernate3-maven-plugin</artifactId>
+                <configuration>
+                    <components>
+                        <component>
+                            <name>hbm2hbmxml</name>
+                            <!-- Generacion de los ficheros hbm.xml en el directorio -->
+                            <outputDirectory>target/generated-sources/hbmxml</outputDirectory>
+                        </component>
+                        <component>
+                            <name>hbm2java</name>
+                            <!-- Generacion de los clases java en el directorio -->
+                            <outputDirectory>target/generated-sources/java</outputDirectory>
+                        </component>
+                    </components>
+                    <componentProperties>
+                        <implementation>jdbcconfiguration</implementation>
+                        <packagename>${project.groupId}.model.catalog</packagename>
+                        <propertyfile>target/hibernate-tools/database.properties</propertyfile>
+                        <revengfile>target/hibernate-tools/hibernate.reveng.xml</revengfile>
+                        <jdk5>true</jdk5>
+                        <ejb3>false</ejb3>
+                        <format>true</format>
+                        <detectmanytomany>false</detectmanytomany>
+                        <haltonerror>false</haltonerror>
+                    </componentProperties>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-tools</artifactId>
+                        <version>${hibernate.tools.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>cglib</groupId>
+                        <artifactId>cglib</artifactId>
+                        <version>${cglib.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>${jdbcDriver.groupId}</groupId>
+                        <artifactId>${jdbcDriver.artifactId}</artifactId>
+                        <version>${jdbcDriver.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <!-- Perfiles de despliegue -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+
+        <profile>
+            <id>was</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>compress</id>
+
+        </profile>
+    </profiles>
+
+
+    <dependencies>
+        <!-- Dependencias dentro del proyecto -->
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>${parent.artifactId}-api</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        
+        <!-- Librerias comunes -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+
+        <!-- Spring framework -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        
+        <!-- Spring security -->
+		<dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+
+        <!-- AOP -->
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+        </dependency>
+
+        <!-- Auditoria -->
+        <dependency>
+            <groupId>com.inditex.arquitectura</groupId>
+            <artifactId>auditoria</artifactId>
+        </dependency>
+
+        <!-- Librerias comunes Inditex -->
+        <dependency><!-- DAOs -->
+            <groupId>com.inditex.common</groupId>
+            <artifactId>dao</artifactId>
+        </dependency>
+        <dependency><!-- Business Logic -->
+            <groupId>com.inditex.common</groupId>
+            <artifactId>business</artifactId>
+        </dependency>
+
+        <!-- Drivers de base de datos para pruebas -->
+        <dependency>
+            <groupId>${jdbcDriver.groupId}</groupId>
+            <artifactId>${jdbcDriver.artifactId}</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Dependencias para pruebas unitarias -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

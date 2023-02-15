@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-abr-2011 12:02:46 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping>
+    <class name="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.DetalleDescuentoDto" table="DETALLE_DESCUENTO" schema="DESCUENTOS">
+    	<composite-id name="idDetalleDescuento" class="com.inditex.ecom.appwebcustomerloyaltyengine.model.dto.PrimaryKeyDetalleDescuentoDto">
+    		<key-property name="idDetalleDescuento" type="java.lang.Long" column="ID_DETALLE_DESCUENTO" />
+    		<key-property name="idInstalacion" type="java.lang.Integer" column="ID_INSTALACION" />
+    	</composite-id>
+        <property name="incrementoPuntos" type="java.math.BigDecimal" column="INCREMENTO_PUNTOS" not-null="false" precision="20" scale="5" />
+        <property name="consumoPuntos" type="java.math.BigDecimal" column="CONSUMO_PUNTOS" not-null="false" precision="20" scale="5" />
+        <property name="porcentajeDescuento" type="java.math.BigDecimal" column="PORCENTAJE_DESCUENTO" not-null="false" precision="20" scale="5" />
+        <property name="importeDescuento" type="java.math.BigDecimal" column="IMPORTE_DESCUENTO" not-null="false" precision="20" scale="5" />
+        <property name="numeroUnidades" type="java.lang.Integer" column="NUMERO_UNIDADES" not-null="false" />
+    </class>
+</hibernate-mapping>
